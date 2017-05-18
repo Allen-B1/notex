@@ -1,0 +1,16 @@
+{
+	"display": "standalone",
+
+	"name":"Notex",
+	"short_name":"Notex",
+	"description": "A simple note-taking app.",
+
+	"scope":"/allenb/notex",
+	"start_url":"./app.htm",
+
+	"theme_color":"#8bc34a",
+	"background_color":"#FAFAFA",
+
+	"dir":"ltr",
+	"lang":"en-us"
+}
