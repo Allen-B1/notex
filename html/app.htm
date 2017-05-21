@@ -61,7 +61,9 @@ function saveNotex(title, textarea, indexN) {
 				card.remove();
 				updateData();
 			}
-		}, 1500);
+			if(navigator.vibrate)
+				navigator.vibrate(200);
+		}, 1000);
 	}
 	card.onmousemove = card.onmouseup = function() {
 		clearTimeout(timeId);	
