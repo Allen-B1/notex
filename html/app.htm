@@ -50,14 +50,21 @@ function saveNotex(title, textarea, indexN) {
 	}
 
 	var card = title.parentNode;
-	card.ondblclick = function() {
-		var ans = window.confirm("Are you sure you want to delete " + 
-			(title.value ? ("'" + title.value + "'") : "the note") + "?");
-		if(ans) {
-			data.cards[index] = null;
-			card.remove();
-			updateData();
-		}
+	
+	var timeId = null;
+	card.onmousedown = function() {
+		timeId = setTimeout(function() {
+			var ans = window.confirm("Are you sure you want to delete " + 
+				(title.value ? ("'" + title.value + "'") : "the note") + "?");
+			if(ans) {
+				data.cards[index] = null;
+				card.remove();
+				updateData();
+			}
+		}, 1500);
+	}
+	card.onmousemove = card.onmouseup = function() {
+		clearTimeout(timeId);	
 	}
 
 	title.oninput = function() {
