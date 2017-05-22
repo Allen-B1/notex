@@ -51,21 +51,25 @@ function saveNotex(title, textarea, indexN) {
 
 	var card = title.parentNode;
 	
+	function options() {
+		var ans = window.confirm("Are you sure you want to delete " + 
+			(title.value ? ("'" + title.value + "'") : "the note") + "?");
+		if(ans) {
+			data.cards[index] = null;
+			card.remove();
+			updateData();
+		}
+		if(navigator.vibrate)
+			navigator.vibrate(200);
+	}
+	
 	var timeId = null;
-	card.onmousedown = function() {
+	card.onmousedown = card.ontouchstart = function() {
 		timeId = setTimeout(function() {
-			var ans = window.confirm("Are you sure you want to delete " + 
-				(title.value ? ("'" + title.value + "'") : "the note") + "?");
-			if(ans) {
-				data.cards[index] = null;
-				card.remove();
-				updateData();
-			}
-			if(navigator.vibrate)
-				navigator.vibrate(200);
+			options();
 		}, 1000);
 	}
-	card.onmousemove = card.onmouseup = function() {
+	card.onmousemove = card.onmouseup = card.ontouchend = card.ontouchmove = function() {
 		clearTimeout(timeId);	
 	}
 
