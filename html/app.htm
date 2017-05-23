@@ -8,29 +8,40 @@
 	<link rel="manifest" href="manifest.json">
 	<meta name="theme-color" content="#8bc34a">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<style>
 a {text-decoration: none; outline:0;}
-a:focus {background: #aed581; border-radius: 2px;}
-* {
-	--mcss-primary: #8bc34a; }
+a:focus {background: #FFD54F; border-radius: 2px;}
 @media (max-width: 640px) {
 	.notex {
 		display: block;
 		overflow-x: hidden;
 	}
 }
+[data-icon]  {font-family: "Verdana", "Helectiva",  sans-serif; }
+#app-bar-opt a:focus {background:#B0BEC5}
 	</style>
 </head>
 <body>
 	<div style="padding:8px" id="main">
-		<div data-app-bar>
+		<div id="app-bar" data-app-bar>
 			<a href="#" data-icon data-icon--left data-menu-icon></a>	
 			<span data-type--title>Notex</span>
 			<a href="#" data-icon style="float:right" onclick="addAndSaveNotex()">+</a>
 		</div>
+		<div id="app-bar-opt" data-app-bar style="display:none;background:#FFF;color:#273236">
+			<a href="#" data-icon data-icon--left onclick="restore()">&lsaquo;</a>
+			<a style="float:right" href="#" data-icon id="del">&#9003;</a>
+		</div>
 		<div data-app-bar--height></div>
 	</div>
 	<script>
+var restore = function() {
+	var app_bar = document.getElementById("app-bar")
+	app_bar.style.display = "block";
+	var app_bar_opt = document.getElementById("app-bar-opt");
+	app_bar_opt.style.display = "none";
+}
 function saveNotex(title, textarea, indexN) {
 	var data = JSON.parse(localStorage.getItem("notex"));
 	if(data === null) data = {};
@@ -44,35 +55,43 @@ function saveNotex(title, textarea, indexN) {
 			color: 0
 		});
 	} else { index = indexN | 0 }
-
 	function updateData() {
 		localStorage.setItem("notex", JSON.stringify(data));
 	}
-
 	var card = title.parentNode;
-	
+
 	function options() {
-		var ans = window.confirm("Are you sure you want to delete " + 
-			(title.value ? ("'" + title.value + "'") : "the note") + "?");
-		if(ans) {
-			data.cards[index] = null;
-			card.remove();
-			updateData();
+		restore = function() {
+			var app_bar = document.getElementById("app-bar")
+			app_bar.style.display = "block";
+			var app_bar_opt = document.getElementById("app-bar-opt");
+			app_bar_opt.style.display = "none";
+			card.style.boxShadow = null;
 		}
-		if(navigator.vibrate)
-			navigator.vibrate(200);
-	}
-	
-	var timeId = null;
-	card.onmousedown = card.ontouchstart = function() {
-		timeId = setTimeout(function() {
-			options();
-		}, 1000);
-	}
-	card.onmousemove = card.onmouseup = card.ontouchend = card.ontouchmove = function() {
-		clearTimeout(timeId);	
+		card.style.boxShadow = "0 4px 8px rgba(0,0,0,0.5)";
+
+		var app_bar = document.getElementById("app-bar")
+		app_bar.style.display = "none";
+		var app_bar_opt = document.getElementById("app-bar-opt");
+		app_bar_opt.style.display = "block";
+
+		var del = document.getElementById("del");
+		del.onclick = function() {
+			var ans = window.confirm("Are you sure you want to delete " + 
+				(title.value ? ("'" + title.value + "'") : "the note") + "?");
+			if(ans) {
+				data.cards[index] = null;
+				card.remove();
+				updateData();
+				restore();
+			}
+			if(navigator.vibrate)
+				navigator.vibrate(200);
+		}
 	}
 
+	card.ondblclick = options;
+	
 	title.oninput = function() {
 		data.cards[index].title = title.value;
 		updateData(); }
@@ -89,7 +108,6 @@ function addNotex(title_t, text_t) {
 	div.style.overflowY = 'auto';
 	div.classList.add("notex");
 	div.style.margin = "8px";
-
 	var title = document.createElement("input");
 	title.type = "text";
 	title.value = title_t;
@@ -100,7 +118,6 @@ function addNotex(title_t, text_t) {
 	title.style.outline = 0;
 	title.style.width = "100%";
 	div.appendChild(title);
-
 	var textarea = document.createElement("textarea");
 	textarea.value = text_t;
 	textarea.style.marginTop = "8px";
@@ -115,16 +132,12 @@ function addNotex(title_t, text_t) {
 	textarea.style.fontFamily = "Roboto, sans-serif";
 	div.appendChild(textarea);
 	document.getElementById("main").appendChild(div);
-
 	return [title, textarea];
-
 }
-
 function addAndSaveNotex(title, txt, idx) {
 	var el = addNotex(title, txt);
 	saveNotex(el[0], el[1], idx);
 }
-
 function initNotex() {
 	var data = JSON.parse(localStorage.getItem("notex"));
 	if(data == null) return;
