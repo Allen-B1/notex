@@ -1,4 +1,6 @@
 # Installation
+First, download this as a zip file. Then unpack it.
+
 ## Method 1: `make`
 First, navigate to the notex folder
 ```
