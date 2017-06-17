@@ -1,4 +1,4 @@
-This project is DISCONTINUED! It has been replaced with https://github.com/Allen-B1/simple-material-notes.
+This project is DISCONTINUED! It has been replaced with https://github.com/Allen-B1/smnotes.
 
 # Notex
 A simple note-taking program.
